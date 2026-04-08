@@ -1,0 +1,29 @@
+{
+  "name": "agex",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AGEX — AI agency platform. 113 agents. 8 teams. One conversation.",
+  "author": "Rudranil Chatterjee <rudranilchatterjee75@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "db:push": "pnpm --filter @agency/db push",
+    "db:migrate": "pnpm --filter @agency/db migrate",
+    "db:seed": "pnpm --filter @agency/db seed"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild",
+      "sharp"
+    ]
+  }
+}
