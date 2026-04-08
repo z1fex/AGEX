@@ -26,8 +26,6 @@
 
 AGEX is a self-hosted AI agency platform. You talk to it. It deploys the right agents. You get professional output.
 
-> **Note:** AGEX v1 is an early release. The chat interface and agent brain are fully functional — you can have real conversations and get real deliverables. Features like vault saving, execution tracking, and multi-step agent chains are planned for v1.5. See the [Roadmap](#roadmap) for what's coming.
-
 It's not a chatbot. It's not a workflow builder. It's a complete AI agency with 113 specialized agents across 8 teams that reads your message, figures out what needs to be done, and does it.
 
 ```
@@ -423,29 +421,34 @@ pnpm build
 - [x] 12 pages: chat, dashboard, agents, workflows, vault, clients, outputs, analytics, settings
 - [x] Chat history persists across navigation
 
-### v1.5 (Planned — "Make It Real")
+### v1.5 — "Make It Real"
 
-The update that makes agents actually work as a system:
-- [ ] **Agent hierarchy** — Dispatcher → Team Lead → Agent chain with focused prompts
-- [ ] **Multi-call execution** — each agent gets its own LLM call instead of one call for everything
-- [ ] **Output saving** — auto-save to vault + output directory + database
+- [ ] **Agent hierarchy** — Dispatcher → Team Lead → Agent chain with focused prompts per agent
+- [ ] **Multi-call execution** — each agent gets its own dedicated LLM call with focused context
+- [ ] **Output saving** — auto-save deliverables to vault + output directory + database
+- [ ] **Vault read/write** — browse, read, and edit vault files from the web UI
 - [ ] **Conversation threads** — multiple chats, searchable, persistent
-- [ ] **Client context** — onboarding creates real vault files, auto-loaded into agent prompts
-- [ ] **Cost tracking** — token counting, per-model pricing, real analytics charts
-- [ ] **Quality gate** — automated scoring after each deliverable
+- [ ] **Client onboarding** — creates real vault files (profile, brand voice, ICP, goals, competitors)
+- [ ] **Client context injection** — client data auto-loaded into every agent prompt
+- [ ] **Execution tracking** — see which agents ran, what they produced, how long it took
+- [ ] **Cost tracking** — token counting per call, per-model pricing, real analytics dashboard
+- [ ] **Quality gate** — automated scoring after each deliverable (brand voice, accuracy, completeness)
 - [ ] **6 new agents** — LinkedIn Ghostwriter, Pitch Deck Writer, Tone Adapter, Trend Predictor, Landing Page Optimizer, Objection Handler
-- [ ] **Database activation** — SQLite wired with 14 tables (schema already exists)
+- [ ] **Database activation** — SQLite fully wired with 14+ tables
+- [ ] **Better small model support** — improved prompts for free-tier models (Groq, Ollama)
+- [ ] **Export outputs** — copy, download as markdown, PDF export
 
-### v2.0 (Future — "Platform")
+### v2.0 — "Platform"
 
 - [ ] CLI version (`npx agex`)
 - [ ] Docker one-click deployment
 - [ ] Web search integration (Tavily / SearXNG)
-- [ ] Custom agent builder (create agents from UI)
+- [ ] Custom agent builder (create agents from the UI)
 - [ ] Workflow builder (drag-and-drop)
 - [ ] Multi-user with authentication
 - [ ] Scheduled recurring tasks
 - [ ] Plugin system for community agent packs
+- [ ] Agent performance metrics and A/B testing between models
 
 ---
 
