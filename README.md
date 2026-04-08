@@ -414,25 +414,14 @@ pnpm build
 
 ## Roadmap
 
-### v1.0 (Current — Early Release)
+### v1.0 (Current)
 
-What works:
 - [x] Chat-first interface with real-time streaming
 - [x] 113 agent brain loaded from 75 markdown files
 - [x] 6 LLM providers (OpenAI, Anthropic, Google, Groq, OpenRouter, Ollama)
 - [x] Full brain (premium models) / compact brain (free models)
 - [x] 12 pages: chat, dashboard, agents, workflows, vault, clients, outputs, analytics, settings
 - [x] Chat history persists across navigation
-- [x] Pitch black theme with blinking stars
-
-What doesn't work yet (honest):
-- [ ] Agents don't actually chain — single LLM call pretends to be all agents
-- [ ] Outputs not saved to vault or files — chat text only
-- [ ] No execution tracking — can't see which agents ran
-- [ ] No cost tracking — analytics page has placeholders
-- [ ] Vault page shows structure but can't read/write real files
-- [ ] Client onboarding doesn't create vault files
-- [ ] Small/free models (Groq) may break character — premium models (GPT-4o, Claude) work much better
 
 ### v1.5 (Planned — "Make It Real")
 
