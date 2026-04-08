@@ -38,3 +38,6 @@ output/
 
 # Secrets
 secrets/
+
+# Internal docs (not for GitHub)
+PROJECT_CONTEXT.md
