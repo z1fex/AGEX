@@ -26,6 +26,8 @@
 
 AGEX is a self-hosted AI agency platform. You talk to it. It deploys the right agents. You get professional output.
 
+> **Note:** AGEX v1 is an early release. The chat interface and agent brain are fully functional — you can have real conversations and get real deliverables. Features like vault saving, execution tracking, and multi-step agent chains are planned for v1.5. See the [Roadmap](#roadmap) for what's coming.
+
 It's not a chatbot. It's not a workflow builder. It's a complete AI agency with 113 specialized agents across 8 teams that reads your message, figures out what needs to be done, and does it.
 
 ```
@@ -412,34 +414,49 @@ pnpm build
 
 ## Roadmap
 
-### v1.0 (Current)
+### v1.0 (Current — Early Release)
 
-- [x] Chat-first interface with streaming
-- [x] 113 agents across 8 teams
-- [x] 9 pre-built workflows
+What works:
+- [x] Chat-first interface with real-time streaming
+- [x] 113 agent brain loaded from 75 markdown files
 - [x] 6 LLM providers (OpenAI, Anthropic, Google, Groq, OpenRouter, Ollama)
-- [x] Full/compact brain for premium/free models
-- [x] Dashboard, agents, workflows, vault, analytics pages
+- [x] Full brain (premium models) / compact brain (free models)
+- [x] 12 pages: chat, dashboard, agents, workflows, vault, clients, outputs, analytics, settings
+- [x] Chat history persists across navigation
 - [x] Pitch black theme with blinking stars
-- [x] Chat history persistence
 
-### v1.1 (Planned)
+What doesn't work yet (honest):
+- [ ] Agents don't actually chain — single LLM call pretends to be all agents
+- [ ] Outputs not saved to vault or files — chat text only
+- [ ] No execution tracking — can't see which agents ran
+- [ ] No cost tracking — analytics page has placeholders
+- [ ] Vault page shows structure but can't read/write real files
+- [ ] Client onboarding doesn't create vault files
+- [ ] Small/free models (Groq) may break character — premium models (GPT-4o, Claude) work much better
 
-- [ ] Client onboarding wizard (interactive form)
-- [ ] Output saving to vault after chat responses
-- [ ] Cost tracking per conversation
-- [ ] Export outputs as PDF/DOCX
-- [ ] Agent performance metrics
+### v1.5 (Planned — "Make It Real")
 
-### v2.0 (Future)
+The update that makes agents actually work as a system:
+- [ ] **Agent hierarchy** — Dispatcher → Team Lead → Agent chain with focused prompts
+- [ ] **Multi-call execution** — each agent gets its own LLM call instead of one call for everything
+- [ ] **Output saving** — auto-save to vault + output directory + database
+- [ ] **Conversation threads** — multiple chats, searchable, persistent
+- [ ] **Client context** — onboarding creates real vault files, auto-loaded into agent prompts
+- [ ] **Cost tracking** — token counting, per-model pricing, real analytics charts
+- [ ] **Quality gate** — automated scoring after each deliverable
+- [ ] **6 new agents** — LinkedIn Ghostwriter, Pitch Deck Writer, Tone Adapter, Trend Predictor, Landing Page Optimizer, Objection Handler
+- [ ] **Database activation** — SQLite wired with 14 tables (schema already exists)
+
+### v2.0 (Future — "Platform")
 
 - [ ] CLI version (`npx agex`)
-- [ ] Docker deployment
-- [ ] Web search integration (Tavily/SearXNG)
+- [ ] Docker one-click deployment
+- [ ] Web search integration (Tavily / SearXNG)
+- [ ] Custom agent builder (create agents from UI)
 - [ ] Workflow builder (drag-and-drop)
-- [ ] Multi-user with auth
+- [ ] Multi-user with authentication
 - [ ] Scheduled recurring tasks
-- [ ] 3D visualizations (React Three Fiber)
+- [ ] Plugin system for community agent packs
 
 ---
 
