@@ -20,10 +20,11 @@ const routeTitles: Record<string, string> = {
 export function Header() {
   const pathname = usePathname();
 
-  const title =
-    Object.entries(routeTitles).find(([route]) =>
-      pathname.startsWith(route) && route === pathname.split("/").slice(0, route.split("/").length).join("/")
-    )?.[1] || routeTitles[pathname] || "Dashboard";
+  // Match longest route first (most specific wins)
+  const title = Object.entries(routeTitles)
+    .sort((a, b) => b[0].length - a[0].length)
+    .find(([route]) => pathname === route || pathname.startsWith(route + "/"))?.[1]
+    || "Dashboard";
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/0.8)] backdrop-blur-xl px-6">
