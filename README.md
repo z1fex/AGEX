@@ -421,12 +421,19 @@ pnpm build
 - [x] 12 pages: chat, dashboard, agents, workflows, vault, clients, outputs, analytics, settings
 - [x] Chat history persists across navigation
 
+### v1.2.5 (Current)
+
+- [x] **Execution engine** — new `@agency/execution-engine` package
+- [x] **Agent hierarchy** — Dispatcher routes to specific agents with focused prompts
+- [x] **Multi-call execution** — each agent gets its own dedicated LLM call (~3-5K tokens, not 50K)
+- [x] **Output saving** — auto-save deliverables to vault + output directory with YAML frontmatter
+- [x] **Vault API** — real file tree + file preview from `/api/vault`
+- [x] **Outputs API** — list saved deliverables from `/api/outputs`
+- [x] **Enhanced streaming** — chat shows agent plan, step progress, completion markers
+- [x] **Improved markdown rendering** — headers, dividers, code blocks, lists, cost info
+
 ### v1.5 — "Make It Real"
 
-- [ ] **Agent hierarchy** — Dispatcher → Team Lead → Agent chain with focused prompts per agent
-- [ ] **Multi-call execution** — each agent gets its own dedicated LLM call with focused context
-- [ ] **Output saving** — auto-save deliverables to vault + output directory + database
-- [ ] **Vault read/write** — browse, read, and edit vault files from the web UI
 - [ ] **Conversation threads** — multiple chats, searchable, persistent
 - [ ] **Client onboarding** — creates real vault files (profile, brand voice, ICP, goals, competitors)
 - [ ] **Client context injection** — client data auto-loaded into every agent prompt
