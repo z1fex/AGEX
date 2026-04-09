@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { useChatStore } from "@/stores/chat-store";
@@ -77,6 +77,7 @@ function ChatContent() {
     setActiveAgents,
   } = useChatStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [completedAgents, setCompletedAgents] = useState<string[]>([]);
   const searchParams = useSearchParams();
   const autoSentRef = useRef(false);
 
@@ -130,7 +131,8 @@ function ChatContent() {
       isStreaming: true,
     });
 
-    setActiveAgents(["Agency Brain"]);
+    setActiveAgents(["Dispatcher"]);
+    setCompletedAgents([]);
 
     try {
       // Build conversation history (last 20 messages for context window)
@@ -180,6 +182,23 @@ function ChatContent() {
           isStreaming: true,
         });
 
+        // Track agents from step headers in the stream
+        // Format: "### agent-name (team)"
+        const stepMatches = fullContent.match(/### (.+?) \((.+?)\)/g);
+        if (stepMatches) {
+          const agents = stepMatches.map((m) => m.replace("### ", "").replace(/ \(.+\)/, ""));
+          const lastAgent = agents[agents.length - 1];
+
+          // Check for completion markers
+          const completionMatches = fullContent.match(/✓ (.+?) —/g);
+          const done = completionMatches
+            ? completionMatches.map((m) => m.replace("✓ ", "").replace(" —", ""))
+            : [];
+
+          setActiveAgents(agents.filter((a) => !done.includes(a)));
+          setCompletedAgents(done);
+        }
+
         // Auto-scroll
         scrollRef.current?.scrollTo({
           top: scrollRef.current.scrollHeight,
@@ -200,6 +219,7 @@ function ChatContent() {
 
     setProcessing(false);
     setActiveAgents([]);
+    setCompletedAgents([]);
   };
 
   return (
@@ -215,8 +235,8 @@ function ChatContent() {
 
       {/* Active agents */}
       <AnimatePresence>
-        {activeAgents.length > 0 && (
-          <AgentStatusBar activeAgents={activeAgents} />
+        {(activeAgents.length > 0 || completedAgents.length > 0) && (
+          <AgentStatusBar activeAgents={activeAgents} completedAgents={completedAgents} />
         )}
       </AnimatePresence>
 
