@@ -44,6 +44,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@agency/execution-engine':
+        specifier: workspace:*
+        version: link:../../packages/execution-engine
       '@agency/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -133,6 +136,22 @@ importers:
       tsx:
         specifier: ^4.19.0
         version: 4.21.0
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/execution-engine:
+    dependencies:
+      '@agency/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@agency/vault-engine':
+        specifier: workspace:*
+        version: link:../vault-engine
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.17
       typescript:
         specifier: ^5.7.0
         version: 5.9.3

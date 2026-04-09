@@ -1,11 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import {
-  extractWikilinks,
-  validatePath,
-  type VaultDocument,
-} from "@agency/shared";
+import { extractWikilinks, validatePath } from "@agency/shared/utils";
+import type { VaultDocument } from "@agency/shared";
 
 /**
  * Read a markdown file from the vault with frontmatter parsing.

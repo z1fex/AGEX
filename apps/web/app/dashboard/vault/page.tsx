@@ -1,150 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  FolderOpen,
-  File,
-  ChevronRight,
-  ChevronDown,
-  Database,
-} from "lucide-react";
+import { FolderOpen, File, ChevronRight, ChevronDown, Database, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EASE_OUT_SMOOTH } from "@/lib/utils";
 
-// Vault structure mirrors the v2 Obsidian vault
-const vaultTree = [
-  {
-    name: "00-Dashboard",
-    type: "folder" as const,
-    children: [
-      { name: "Agency Dashboard.md", type: "file" as const },
-      { name: "ROI Tracker.md", type: "file" as const },
-    ],
-  },
-  {
-    name: "01-Clients",
-    type: "folder" as const,
-    children: [
-      { name: "_Client Template.md", type: "file" as const },
-    ],
-  },
-  {
-    name: "02-Campaigns",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "03-Research",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "04-Intelligence",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "05-Content",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "06-Strategy",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "07-Sales",
-    type: "folder" as const,
-    children: [],
-  },
-  {
-    name: "08-Operations",
-    type: "folder" as const,
-    children: [],
-  },
-];
+interface TreeEntry {
+  name: string;
+  type: "file" | "directory";
+  path: string;
+  children?: TreeEntry[];
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE_OUT_SMOOTH as any } },
 };
 
-const stagger = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.04 } },
-};
-
-function FolderItem({
-  item,
-  depth = 0,
-}: {
-  item: (typeof vaultTree)[0];
-  depth?: number;
-}) {
-  const [open, setOpen] = useState(depth === 0);
-  const isFolder = item.type === "folder";
-  const children = "children" in item ? (item as any).children : [];
-
-  return (
-    <div>
-      <button
-        onClick={() => isFolder && setOpen(!open)}
-        className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-[hsl(var(--muted)/0.5)] ${
-          isFolder
-            ? "text-[hsl(var(--foreground))] font-medium"
-            : "text-[hsl(var(--muted-foreground))]"
-        }`}
-        style={{ paddingLeft: `${depth * 16 + 12}px` }}
-      >
-        {isFolder ? (
-          open ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--muted-foreground))]" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--muted-foreground))]" />
-          )
-        ) : (
-          <File className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--muted-foreground))]" />
-        )}
-        {isFolder ? (
-          <FolderOpen className="h-4 w-4 shrink-0 text-[hsl(var(--primary))]" />
-        ) : null}
-        <span className="truncate">{item.name}</span>
-        {isFolder && children.length > 0 && (
-          <span className="ml-auto text-xs text-[hsl(var(--muted-foreground))]">
-            {children.length}
-          </span>
-        )}
-      </button>
-
-      {isFolder && open && children.length > 0 && (
-        <div>
-          {children.map((child: any) => (
-            <FolderItem key={child.name} item={child} depth={depth + 1} />
-          ))}
-        </div>
-      )}
-
-      {isFolder && open && children.length === 0 && (
-        <p
-          className="px-3 py-1.5 text-xs text-[hsl(var(--muted-foreground))] italic"
-          style={{ paddingLeft: `${(depth + 1) * 16 + 12}px` }}
-        >
-          Empty — files appear here after running workflows
-        </p>
-      )}
-    </div>
-  );
-}
-
 export default function VaultPage() {
+  const [tree, setTree] = useState<TreeEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState<string>("");
+  const [loadingFile, setLoadingFile] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/vault?action=tree")
+      .then((r) => r.json())
+      .then((data) => setTree(data.tree || []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleFileClick = async (filePath: string) => {
+    setSelectedFile(filePath);
+    setLoadingFile(true);
+    try {
+      const res = await fetch(`/api/vault?action=file&path=${encodeURIComponent(filePath)}`);
+      const data = await res.json();
+      setFileContent(data.content || "File not found");
+    } catch {
+      setFileContent("Failed to load file");
+    }
+    setLoadingFile(false);
+  };
+
   return (
-    <motion.div initial="hidden" animate="show" variants={stagger} className="space-y-6">
+    <motion.div initial="hidden" animate="show" variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.06 } } }} className="space-y-6">
       <motion.div variants={fadeUp}>
-        <h2 className="text-2xl font-bold text-[hsl(var(--foreground))]">Vault</h2>
-        <p className="mt-1 text-[hsl(var(--muted-foreground))]">
-          Your agency's knowledge base. Obsidian-compatible markdown files.
+        <h2 className="text-2xl font-bold text-white">Vault</h2>
+        <p className="mt-1 text-[rgb(116,116,116)]">
+          Your agency's knowledge base. Files are created when agents save outputs.
         </p>
       </motion.div>
 
@@ -154,37 +61,127 @@ export default function VaultPage() {
           <Card glass>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Database className="h-4 w-4 text-[hsl(var(--primary))]" />
-                Vault Structure
+                <Database className="h-4 w-4 text-white" />
+                Vault Files
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2">
-              <div className="space-y-0.5">
-                {vaultTree.map((item) => (
-                  <FolderItem key={item.name} item={item} />
-                ))}
-              </div>
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-5 w-5 animate-spin text-[rgb(116,116,116)]" />
+                </div>
+              ) : tree.length === 0 ? (
+                <p className="px-3 py-4 text-sm text-[rgb(116,116,116)]">
+                  Vault is empty. Run an agent from the chat to generate files.
+                </p>
+              ) : (
+                <div className="space-y-0.5">
+                  {tree.map((item) => (
+                    <FolderItem
+                      key={item.name}
+                      item={item}
+                      selectedFile={selectedFile}
+                      onFileClick={handleFileClick}
+                    />
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Preview area */}
+        {/* Preview */}
         <motion.div variants={fadeUp} className="lg:col-span-2">
           <Card glass className="h-full min-h-[400px]">
-            <CardContent className="flex h-full items-center justify-center p-12">
-              <div className="text-center">
-                <FolderOpen className="mx-auto h-12 w-12 text-[hsl(var(--muted-foreground)/0.3)]" />
-                <p className="mt-4 text-sm text-[hsl(var(--muted-foreground))]">
-                  Select a file to preview its contents.
-                </p>
-                <p className="mt-1 text-xs text-[hsl(var(--muted-foreground)/0.6)]">
-                  Files are generated when you run workflows through the chat.
-                </p>
-              </div>
-            </CardContent>
+            {selectedFile ? (
+              <CardContent className="p-6">
+                <div className="mb-4 flex items-center gap-2 text-xs text-[rgb(116,116,116)]">
+                  <File className="h-3.5 w-3.5" />
+                  {selectedFile}
+                </div>
+                {loadingFile ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-5 w-5 animate-spin text-[rgb(116,116,116)]" />
+                  </div>
+                ) : (
+                  <pre className="whitespace-pre-wrap text-sm text-[rgb(200,200,200)] leading-relaxed font-mono">
+                    {fileContent}
+                  </pre>
+                )}
+              </CardContent>
+            ) : (
+              <CardContent className="flex h-full items-center justify-center p-12">
+                <div className="text-center">
+                  <FolderOpen className="mx-auto h-12 w-12 text-[rgb(50,50,50)]" />
+                  <p className="mt-4 text-sm text-[rgb(116,116,116)]">
+                    Select a file to preview its contents.
+                  </p>
+                </div>
+              </CardContent>
+            )}
           </Card>
         </motion.div>
       </div>
     </motion.div>
+  );
+}
+
+function FolderItem({
+  item,
+  depth = 0,
+  selectedFile,
+  onFileClick,
+}: {
+  item: TreeEntry;
+  depth?: number;
+  selectedFile: string | null;
+  onFileClick: (path: string) => void;
+}) {
+  const [open, setOpen] = useState(depth === 0);
+  const isFolder = item.type === "directory";
+  const children = item.children || [];
+  const isSelected = selectedFile === item.path;
+
+  return (
+    <div>
+      <button
+        onClick={() => (isFolder ? setOpen(!open) : onFileClick(item.path))}
+        className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+          isSelected
+            ? "bg-white/5 text-white"
+            : isFolder
+            ? "text-[rgb(200,200,200)] hover:bg-white/5"
+            : "text-[rgb(116,116,116)] hover:bg-white/5 hover:text-white"
+        }`}
+        style={{ paddingLeft: `${depth * 16 + 12}px` }}
+      >
+        {isFolder ? (
+          open ? <ChevronDown className="h-3 w-3 shrink-0" /> : <ChevronRight className="h-3 w-3 shrink-0" />
+        ) : (
+          <File className="h-3 w-3 shrink-0" />
+        )}
+        {isFolder && <FolderOpen className="h-3.5 w-3.5 shrink-0 text-white" />}
+        <span className="truncate">{item.name}</span>
+        {isFolder && children.length > 0 && (
+          <span className="ml-auto text-xs text-[rgb(80,80,80)]">{children.length}</span>
+        )}
+      </button>
+
+      {isFolder && open && children.map((child) => (
+        <FolderItem
+          key={child.name}
+          item={child}
+          depth={depth + 1}
+          selectedFile={selectedFile}
+          onFileClick={onFileClick}
+        />
+      ))}
+
+      {isFolder && open && children.length === 0 && (
+        <p className="px-3 py-1 text-xs text-[rgb(60,60,60)] italic" style={{ paddingLeft: `${(depth + 1) * 16 + 12}px` }}>
+          Empty
+        </p>
+      )}
+    </div>
   );
 }

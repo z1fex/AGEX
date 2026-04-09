@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { useChatStore } from "@/stores/chat-store";
@@ -59,6 +59,14 @@ function getProviderConfig() {
 }
 
 export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="flex h-[calc(100vh-4rem)] items-center justify-center text-[hsl(var(--muted-foreground))]">Loading chat...</div>}>
+      <ChatContent />
+    </Suspense>
+  );
+}
+
+function ChatContent() {
   const {
     messages,
     isProcessing,

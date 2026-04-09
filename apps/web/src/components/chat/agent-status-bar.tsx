@@ -3,13 +3,17 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, Loader2, CheckCircle2 } from "lucide-react";
 import { EASE_OUT_SMOOTH } from "@/lib/utils";
-import type { ExecutionStep } from "@/stores/chat-store";
+interface AgentStep {
+  agent: string;
+  team: string;
+  status: "pending" | "running" | "completed" | "failed";
+}
 
 export function AgentStatusBar({
   steps,
   activeAgents,
 }: {
-  steps?: ExecutionStep[];
+  steps?: AgentStep[];
   activeAgents: string[];
 }) {
   if (activeAgents.length === 0 && (!steps || steps.length === 0)) return null;

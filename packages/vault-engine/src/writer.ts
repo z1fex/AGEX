@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { validatePath } from "@agency/shared";
+import { validatePath } from "@agency/shared/utils";
 
 /**
  * Write a markdown file to the vault with frontmatter.
