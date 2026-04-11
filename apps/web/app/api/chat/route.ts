@@ -15,6 +15,7 @@ import {
 const CONTENT_ROOT = path.resolve(process.cwd(), "../../content");
 const VAULT_ROOT = path.resolve(process.cwd(), "../../vault");
 const OUTPUT_ROOT = path.resolve(process.cwd(), "../../output");
+const DATA_DIR = path.resolve(process.cwd(), "../../data");
 
 export async function POST(req: NextRequest) {
   try {
@@ -193,6 +194,7 @@ function streamExecution(
           clientSlug: clientSlug,
           vaultRoot: VAULT_ROOT,
           outputRoot: OUTPUT_ROOT,
+          dataDir: DATA_DIR,
         });
       } catch (err) {
         controller.enqueue(

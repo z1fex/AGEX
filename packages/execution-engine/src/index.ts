@@ -5,4 +5,6 @@ export { callLLM, callLLMSync, parseStream } from "./llm-caller";
 export { buildCompactBrainForConversation } from "./conversation-brain";
 export { saveOutput, listOutputs, type OutputEntry } from "./output-saver";
 export { buildClientContext, createClientFiles, listClients, type ClientContext } from "./context-builder";
+export { recordCost, getCostSummary, type CostEvent, type CostSummary } from "./cost-tracker";
+export { runQualityGate, type QualityResult } from "./quality-gate";
 export * from "./types";

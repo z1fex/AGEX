@@ -2,6 +2,7 @@ import path from "node:path";
 import { loadAgentPrompt } from "./agent-loader";
 import { callLLM, parseStream, callLLMSync } from "./llm-caller";
 import { saveOutput } from "./output-saver";
+import { recordCost } from "./cost-tracker";
 import type {
   DispatchResult,
   ExecutionStep,
@@ -29,6 +30,7 @@ export async function executePlan(
     conversationHistory?: { role: string; content: string }[];
     vaultRoot?: string;
     outputRoot?: string;
+    dataDir?: string;
   }
 ): Promise<void> {
   const startTime = Date.now();
@@ -107,6 +109,23 @@ export async function executePlan(
           durationMs: stepDuration,
         },
       });
+
+      // Record cost event
+      if (options?.dataDir) {
+        try {
+          recordCost(options.dataDir, {
+            agent: step.agentSlug,
+            team: step.teamSlug,
+            provider: llmConfig.provider,
+            model: llmConfig.model,
+            promptTokens,
+            completionTokens,
+            costUsd: stepCost,
+            durationMs: stepDuration,
+            clientSlug: options.clientSlug,
+          });
+        } catch {}
+      }
 
       // Save output to vault + output directory
       if (fullContent.trim() && options?.vaultRoot && options?.outputRoot) {
