@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-white?style=flat-square&labelColor=000" alt="Version" />
-  <img src="https://img.shields.io/badge/agents-113+-white?style=flat-square&labelColor=000" alt="Agents" />
+  <img src="https://img.shields.io/badge/version-1.5.0-white?style=flat-square&labelColor=000" alt="Version" />
+  <img src="https://img.shields.io/badge/agents-119+-white?style=flat-square&labelColor=000" alt="Agents" />
   <img src="https://img.shields.io/badge/teams-8-white?style=flat-square&labelColor=000" alt="Teams" />
   <img src="https://img.shields.io/badge/workflows-9-white?style=flat-square&labelColor=000" alt="Workflows" />
   <img src="https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=000" alt="License" />
@@ -432,18 +432,22 @@ pnpm build
 - [x] **Enhanced streaming** — chat shows agent plan, step progress, completion markers
 - [x] **Improved markdown rendering** — headers, dividers, code blocks, lists, cost info
 
-### v1.5 — "Make It Real"
+### v1.5 — "Make It Real" (Current)
 
-- [ ] **Conversation threads** — multiple chats, searchable, persistent
-- [ ] **Client onboarding** — creates real vault files (profile, brand voice, ICP, goals, competitors)
-- [ ] **Client context injection** — client data auto-loaded into every agent prompt
-- [ ] **Execution tracking** — see which agents ran, what they produced, how long it took
-- [ ] **Cost tracking** — token counting per call, per-model pricing, real analytics dashboard
-- [ ] **Quality gate** — automated scoring after each deliverable (brand voice, accuracy, completeness)
-- [ ] **6 new agents** — LinkedIn Ghostwriter, Pitch Deck Writer, Tone Adapter, Trend Predictor, Landing Page Optimizer, Objection Handler
-- [ ] **Database activation** — SQLite fully wired with 14+ tables
-- [ ] **Better small model support** — improved prompts for free-tier models (Groq, Ollama)
-- [ ] **Export outputs** — copy, download as markdown, PDF export
+- [x] **Conversation threads** — multiple chats, auto-titled, persistent
+- [x] **Client onboarding** — creates real vault files (profile, brand voice, ICP, goals, competitors)
+- [x] **Client context injection** — client data auto-loaded into dispatcher + agent prompts
+- [x] **Cost tracking** — per-call token counting, pricing table, real analytics dashboard
+- [x] **Quality gate** — automated scoring via fast LLM model
+- [x] **6 new agents** — LinkedIn Ghostwriter, Pitch Deck Writer, Tone Adapter, Trend Predictor, Landing Page Optimizer, Objection Handler (119+ total)
+- [x] **Analytics API** — real cost data by provider, team, and day
+- [x] **Clients API** — create + list clients from vault directory
+
+### v2.0 — "Platform"
+
+- [ ] Database activation (SQLite fully wired)
+- [ ] Export outputs (markdown, PDF)
+- [ ] Better small model support (improved compact brain)
 
 ### v2.0 — "Platform"
 
