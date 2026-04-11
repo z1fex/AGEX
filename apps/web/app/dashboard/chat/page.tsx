@@ -7,6 +7,7 @@ import { useChatStore } from "@/stores/chat-store";
 import { MessageBubble } from "@/components/chat/message-bubble";
 import { ChatInput } from "@/components/chat/chat-input";
 import { AgentStatusBar } from "@/components/chat/agent-status-bar";
+import { ThreadList } from "@/components/chat/thread-list";
 
 const SETTINGS_KEY = "agency-llm-settings";
 const ACTIVE_KEY = "agency-active-provider";
@@ -68,14 +69,16 @@ export default function ChatPage() {
 
 function ChatContent() {
   const {
-    messages,
+    getMessages,
     isProcessing,
     activeAgents,
     addMessage,
     updateMessage,
     setProcessing,
     setActiveAgents,
+    activeThreadId,
   } = useChatStore();
+  const messages = getMessages();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [completedAgents, setCompletedAgents] = useState<string[]>([]);
   const searchParams = useSearchParams();
@@ -152,6 +155,9 @@ function ChatContent() {
           apiKey: config.apiKey,
           model: config.model,
           baseUrl: config.baseUrl,
+          clientSlug: useChatStore.getState().threads.find(
+            (t) => t.id === useChatStore.getState().activeThreadId
+          )?.clientSlug,
         }),
       });
 
@@ -223,25 +229,33 @@ function ChatContent() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
-      {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
-        <div className="mx-auto max-w-3xl space-y-6">
-          {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
-        </div>
+    <div className="flex h-[calc(100vh-4rem)]">
+      {/* Thread sidebar */}
+      <div className="hidden md:flex w-64 shrink-0 flex-col border-r border-[rgb(20,20,20)] bg-black py-3">
+        <ThreadList />
       </div>
 
-      {/* Active agents */}
-      <AnimatePresence>
-        {(activeAgents.length > 0 || completedAgents.length > 0) && (
-          <AgentStatusBar activeAgents={activeAgents} completedAgents={completedAgents} />
-        )}
-      </AnimatePresence>
+      {/* Chat area */}
+      <div className="flex flex-1 flex-col">
+        {/* Messages */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
+          <div className="mx-auto max-w-3xl space-y-6">
+            {messages.map((message) => (
+              <MessageBubble key={message.id} message={message} />
+            ))}
+          </div>
+        </div>
 
-      {/* Input */}
-      <ChatInput onSend={handleSend} isProcessing={isProcessing} />
+        {/* Active agents */}
+        <AnimatePresence>
+          {(activeAgents.length > 0 || completedAgents.length > 0) && (
+            <AgentStatusBar activeAgents={activeAgents} completedAgents={completedAgents} />
+          )}
+        </AnimatePresence>
+
+        {/* Input */}
+        <ChatInput onSend={handleSend} isProcessing={isProcessing} />
+      </div>
     </div>
   );
 }

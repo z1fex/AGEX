@@ -5,6 +5,7 @@ import {
   isLikelyConversation,
   executePlan,
   buildCompactBrainForConversation,
+  buildClientContext,
   callLLM,
   parseStream,
   type LLMConfig,
@@ -18,13 +19,19 @@ const OUTPUT_ROOT = path.resolve(process.cwd(), "../../output");
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, provider, apiKey, model, baseUrl } = body as {
+    const { messages, provider, apiKey, model, baseUrl, clientSlug } = body as {
       messages: { role: string; content: string }[];
       provider: string;
       apiKey: string;
       model: string;
       baseUrl?: string;
+      clientSlug?: string;
     };
+
+    // Build client context if a client is associated
+    const clientCtx = clientSlug
+      ? buildClientContext(clientSlug, VAULT_ROOT)
+      : null;
 
     if (!provider || !model) {
       return new Response(
@@ -53,9 +60,10 @@ export async function POST(req: NextRequest) {
     try {
       dispatchResult = await dispatch(
         userMessage,
-        messages.slice(0, -1), // history without current message
+        messages.slice(0, -1),
         llmConfig,
-        CONTENT_ROOT
+        CONTENT_ROOT,
+        clientCtx?.summary
       );
     } catch {
       // If dispatcher fails, fall back to conversation mode
@@ -68,7 +76,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Execute the plan with SSE streaming
-    return streamExecution(dispatchResult, llmConfig, messages);
+    return streamExecution(dispatchResult, llmConfig, messages, clientCtx?.summary, clientSlug);
   } catch (err: any) {
     return new Response(
       JSON.stringify({ error: err.message || "LLM call failed" }),
@@ -125,7 +133,9 @@ function streamConversation(
 function streamExecution(
   plan: Awaited<ReturnType<typeof dispatch>>,
   config: LLMConfig,
-  messages: { role: string; content: string }[]
+  messages: { role: string; content: string }[],
+  clientContext?: string,
+  clientSlug?: string
 ): Response {
   const encoder = new TextEncoder();
 
@@ -179,6 +189,8 @@ function streamExecution(
           }
         }, {
           conversationHistory: messages,
+          clientContext: clientContext,
+          clientSlug: clientSlug,
           vaultRoot: VAULT_ROOT,
           outputRoot: OUTPUT_ROOT,
         });

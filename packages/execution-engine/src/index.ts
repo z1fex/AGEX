@@ -4,4 +4,5 @@ export { loadAgentPrompt, buildAgentRegistry, buildWorkflowRegistry } from "./ag
 export { callLLM, callLLMSync, parseStream } from "./llm-caller";
 export { buildCompactBrainForConversation } from "./conversation-brain";
 export { saveOutput, listOutputs, type OutputEntry } from "./output-saver";
+export { buildClientContext, createClientFiles, listClients, type ClientContext } from "./context-builder";
 export * from "./types";
